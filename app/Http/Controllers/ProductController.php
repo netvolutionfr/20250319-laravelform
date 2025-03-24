@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Monolog\Logger;
 
 class ProductController extends Controller
@@ -21,9 +22,14 @@ class ProductController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
-            'price' => 'required|numeric|min:0'
+            'price' => 'required|numeric|min:0',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:4096'
         ]);
 
+        $image = $request->file('image');
+        $imageName = time() . '-' . $image->getFilename() . '.' . $image->extension();
+        $image->move(public_path('images'), $imageName);
+        $request->merge(['image' => $imageName]);
         Product::create($request->all());
         return redirect()->route('products.index')->with('success', 'Product created successfully.');
     }
@@ -32,10 +38,10 @@ class ProductController extends Controller
         return view('products.edit', compact('product'));
     }
 
-    public function update(Request $request, Product $id) {
-        $product = Product::findOrFail($id)->first();
+    public function update(Request $request, int $id) {
+        $product = Product::find($id)->first();
         // log the product to see if it is being fetched
-        Logger::info($product);
+        Log::info($product);
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
