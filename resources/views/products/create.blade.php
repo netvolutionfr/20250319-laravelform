@@ -34,6 +34,12 @@
         <label for="image" class="form-label">Image</label>
         <input type="file" class="form-control" id="image" name="image" required>
     </div>
+
+    <div class="mb-3">
+        <label for="pdf" class="form-label">PDF</label>
+        <input type="file" class="form-control" id="pdf" name="pdf">
+    </div>
+
     <button type="submit" class="btn btn-primary">Enregistrer</button>
 </form>
 </body>

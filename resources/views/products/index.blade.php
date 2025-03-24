@@ -21,6 +21,8 @@
         <th>Nom</th>
         <th>Description</th>
         <th>Prix (€)</th>
+        <th>Image</th>
+        <th>PDF</th>
         <th>Actions</th>
     </tr>
     </thead>
@@ -31,6 +33,20 @@
             <td>{{ $product->name }}</td>
             <td>{{ $product->description }}</td>
             <td>{{ number_format($product->price, 2, ',', ' ') }} €</td>
+            <td>
+                @if($product->image)
+                    <img src="/images/{{ $product->image }}" alt="{{ $product->name }}" style="width: 100px;">
+                @else
+                   &nbsp;
+                @endif
+            </td>
+            <td>
+                @if($product->pdf)
+                    <a href="/pdfs/{{ $product->pdf }}" target="_blank">Télécharger</a>
+                @else
+                    &nbsp;
+                @endif
+            </td>
             <td>
                 <a href="{{ route('products.edit', $product->id) }}" class="btn btn-info btn-sm">Modifier</a>
                 <form action="{{ route('products.destroy', $product->id) }}" method="POST" class="d-inline">

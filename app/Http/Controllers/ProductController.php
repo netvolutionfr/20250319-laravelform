@@ -19,18 +19,27 @@ class ProductController extends Controller
     }
 
     public function store(Request $request) {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:4096'
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:4096',
+            'pdf' => 'nullable|mimes:pdf|max:4096'
         ]);
 
-        $image = $request->file('image');
-        $imageName = time() . '-' . $image->getFilename() . '.' . $image->extension();
+        $image = $validated['image'];
+        $imageName = time() . '-' . $image->getClientOriginalName();
         $image->move(public_path('images'), $imageName);
-        $request->merge(['image' => $imageName]);
-        Product::create($request->all());
+        $validated['image'] = $imageName;
+
+        $pdf = $validated['pdf'];
+        if ($pdf) {
+            $pdfName = time() . '-' . $pdf->getClientOriginalName();
+            $pdf->move(public_path('pdfs'), $pdfName);
+            $validated['pdf'] = $pdfName;
+        }
+
+        Product::create($validated);
         return redirect()->route('products.index')->with('success', 'Product created successfully.');
     }
 
