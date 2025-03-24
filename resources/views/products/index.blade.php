@@ -32,8 +32,12 @@
             <td>{{ $product->description }}</td>
             <td>{{ number_format($product->price, 2, ',', ' ') }} €</td>
             <td>
-                <a href="#" class="btn btn-info btn-sm">Modifier</a>
-                <a href="#" class="btn btn-danger btn-sm">Supprimer</a>
+                <a href="{{ route('products.edit', $product->id) }}" class="btn btn-info btn-sm">Modifier</a>
+                <form action="{{ route('products.destroy', $product->id) }}" method="POST" class="d-inline">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')">Supprimer</button>
+                </form>
             </td>
         </tr>
     @endforeach
